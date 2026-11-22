@@ -1,0 +1,141 @@
+window.iniciarPainelMestreV7=async function(){
+  const auth=window.RPG_AUTH,qs=new URLSearchParams(location.search),campanha=qs.get("campanha")||"Testes",rpg=document.body.dataset.rpg;
+  if(auth?.perfil!=="mestre")return;
+  const estilo=document.createElement("link");estilo.rel="stylesheet";estilo.href="../../../mestre-painel-v7.css?v=65";document.head.appendChild(estilo);const estiloConfronto=document.createElement("link");estiloConfronto.rel="stylesheet";estiloConfronto.href="../../../confronto-v9.css?v=36";document.head.appendChild(estiloConfronto);
+  const main=document.querySelector(".pagina-mestre"),grade=document.querySelector("#grade-mestre"),cabecalho=document.querySelector(".mestre-cabecalho");
+  const nav=document.createElement("nav");nav.className="painel-mestre-abas";nav.setAttribute("aria-label","Área da campanha");
+  for(const [chave,nome] of [["jogadores","Fichas dos jogadores"],["escudo","Escudo do Mestre"],["npcs","NPCs/Monstros"]]){
+    const b=document.createElement("button");b.type="button";b.dataset.painel=chave;b.textContent=nome;nav.appendChild(b);
+  }
+  cabecalho.after(nav);
+  const escudo=document.createElement("section");escudo.className="escudo-campanha";escudo.hidden=true;
+  escudo.innerHTML='<aside class="historico-mestre"><header><h2>Histórico de dados</h2><small>Rolagens de jogadores, NPCs e monstros</small></header><div id="historico-dados" aria-live="polite"></div><button id="mais-historico" type="button">Carregar anteriores</button></aside><section><section class="confrontos-escudo"><header class="escudo-resumo-topo"><div><small>Tempo real</small><h2>Confrontos ativos</h2></div></header><div id="confrontos-ativos" class="lista-confrontos-ativos"></div></section><header class="escudo-resumo-topo"><h2>Jogadores da campanha</h2><div class="acoes-escudo-topo"><button id="restaurar-todos" type="button">♥ Restaurar jogadores</button><button id="limpar-historico" type="button">🗑 Limpar histórico</button><button id="testar-animacao" type="button">▶ Ver animação</button><button id="atualizar-escudo" type="button">↻ Atualizar</button></div></header><div id="resumos-campanha" class="resumos-campanha"></div></section>';
+  main.appendChild(escudo);
+  const npcs=document.createElement("section");npcs.className="painel-npcs";npcs.hidden=true;
+  npcs.innerHTML='<header class="escudo-resumo-topo"><div><h2>NPCs e Monstros</h2><p>Fichas privadas do Mestre — sem limite de pontos.</p></div><button id="novo-npc" type="button">+ Criar ficha</button></header><div id="grade-npcs" class="resumos-campanha"></div>';
+  main.appendChild(npcs);
+  const atributos=[["agilidade","AGI"],["forca","FOR"],["apt_magica","APT"],["presenca","PRE"],["resistencia","RES"]];
+  function somPrevia(){try{const C=window.AudioContext||window.webkitAudioContext,ctx=new C(),t=ctx.currentTime,g=ctx.createGain();g.connect(ctx.destination);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.07,t+.03);g.gain.exponentialRampToValueAtTime(.0001,t+.65);const o=ctx.createOscillator();o.connect(g);o.type=rpg==="abismo"?"triangle":"sawtooth";o.frequency.setValueAtTime(rpg==="abismo"?950:180,t);o.frequency.exponentialRampToValueAtTime(rpg==="abismo"?180:1250,t+.38);o.start(t);o.stop(t+.7)}catch{}}
+  function espadasPreviaSvg(){return '<div class="espadas espadas-realistas"><svg viewBox="0 0 900 600"><defs><linearGradient id="aco-prev-v35"><stop stop-color="#4a5861"/><stop offset=".2" stop-color="#f4fbff"/><stop offset=".48" stop-color="#879aa5"/><stop offset=".72" stop-color="#fff"/><stop offset="1" stop-color="#394851"/></linearGradient><linearGradient id="ouro-prev-v35" x2="1" y2="1"><stop stop-color="#5a3410"/><stop offset=".35" stop-color="#e9c16f"/><stop offset=".58" stop-color="#fff0a8"/><stop offset="1" stop-color="#654017"/></linearGradient><linearGradient id="couro-prev-v35" x2="1" y2="1"><stop stop-color="#120b08"/><stop offset=".5" stop-color="#704529"/><stop offset="1" stop-color="#17100c"/></linearGradient></defs><g class="espada-svg espada-svg-esq"><path class="lamina-sombra" d="M438 302 96 72 64 32 111 54 468 278Z"/><path class="lamina" d="M438 302 96 72 64 32 111 54 468 278Z" fill="url(#aco-prev-v35)"/><path class="fio" d="M64 32 438 302 111 54Z"/><path class="sulco" d="M105 63 424 286"/><path class="guarda" d="M423 310 472 260 492 280 443 330Z" fill="url(#ouro-prev-v35)"/><path class="cabo" d="M452 321 535 402 506 432 424 348Z" fill="url(#couro-prev-v35)"/><path class="enrolamento" d="m447 326 29 6m-17 10 29 6m-18 10 29 6m-18 10 29 6m-18 10 28 6m-17 10 21 5"/><circle class="pomo" cx="521" cy="417" r="22" fill="url(#ouro-prev-v35)"/></g><g class="espada-svg espada-svg-dir"><path class="lamina-sombra" d="M462 302 804 72 836 32 789 54 432 278Z"/><path class="lamina" d="M462 302 804 72 836 32 789 54 432 278Z" fill="url(#aco-prev-v35)"/><path class="fio" d="M836 32 462 302 789 54Z"/><path class="sulco" d="M795 63 476 286"/><path class="guarda" d="M477 310 428 260 408 280 457 330Z" fill="url(#ouro-prev-v35)"/><path class="cabo" d="M448 321 365 402 394 432 476 348Z" fill="url(#couro-prev-v35)"/><path class="enrolamento" d="m453 326-29 6m17 10-29 6m18 10-29 6m18 10-29 6m18 10-28 6m17 10-21 5"/><circle class="pomo" cx="379" cy="417" r="22" fill="url(#ouro-prev-v35)"/></g><g class="faiscas-v35"><path d="M450 265v-55M420 275l-35-43M480 275l35-43M412 303h-58M488 303h58M425 327l-42 38M475 327l42 38"/></g></svg><em></em><strong>CONFRONTO</strong></div>'}
+  function espadasPreviaImagem(){const src="../../../assets/confronto/espada-abismo-v36.png";return `<div class="espadas espadas-v36"><div class="choque-v36"><img class="espada-v36 espada-v36-esq" src="${src}" alt=""><img class="espada-v36 espada-v36-dir" src="${src}" alt=""><em></em><i></i></div><strong>CONFRONTO</strong></div>`}
+  function previsualizarAnimacao(){document.querySelector(".inicio-confronto.previa-mestre")?.remove();const tela=document.createElement("div");tela.className=`inicio-confronto tema-${rpg} previa-mestre`;tela.innerHTML=rpg==="abismo"?espadasPreviaImagem():'<div class="lasers"><i></i><i></i><strong>ALVO IDENTIFICADO</strong></div>';document.body.appendChild(tela);somPrevia();const saida=rpg==="marvel"?2200:1900,remocao=rpg==="marvel"?2800:2350;setTimeout(()=>tela.classList.add("sumindo"),saida);setTimeout(()=>tela.remove(),remocao)}
+  const aviso=(texto)=>{const p=document.querySelector("#aviso-mestre");p.textContent=texto;p.classList.remove("sucesso")};
+  async function foto(path){if(!path)return "";const {data}=await auth.cliente.storage.from("personagens").createSignedUrl(path,3600);return data?.signedUrl||""}
+  function texto(tag,valor,classe=""){const el=document.createElement(tag);el.textContent=valor;el.className=classe;return el}
+  function barra(nome,atual,max,classe){const el=document.createElement("div");el.className="resumo-recurso "+classe;el.appendChild(texto("span",nome));const trilho=document.createElement("div");trilho.className="resumo-trilho";const fill=document.createElement("i");fill.style.width=(max?Math.min(100,Math.max(0,atual/max*100)):0)+"%";trilho.appendChild(fill);trilho.appendChild(texto("strong",atual+" / "+max));el.appendChild(trilho);return el}
+  async function cartao(p,npc=false){
+    const card=document.createElement("article");card.className="resumo-jogador";const header=document.createElement("header"),url=await foto(p.foto_path);
+    if(url){const img=document.createElement("img");img.src=url;img.alt=p.nome;header.appendChild(img)}else header.appendChild(texto("div","?", "resumo-foto-vazia"));
+    const info=document.createElement("div");info.appendChild(texto("h3",p.nome));info.appendChild(texto("small",npc?p.tipo:"Nível "+(p.nivel??0)));
+    if(!npc){const {data:nome}=await auth.cliente.rpc("nome_jogador_da_ficha",{ficha_id:p.id});info.appendChild(texto("p",nome||"Jogador"))}
+    header.appendChild(info);card.appendChild(header);
+    const attrs=document.createElement("div");attrs.className="resumo-atributos";atributos.forEach(([campo,label])=>{const cel=document.createElement("div");cel.append(texto("small",label),texto("strong",p[campo]??0));attrs.appendChild(cel)});card.appendChild(attrs);
+    card.append(barra("Vida",p.vida_atual??15,p.vida_max??15,"vida"),barra("Energia Mágica",p.energia_atual??0,p.energia_max??0,"energia"),barra("Sanidade",p.sanidade_atual??100,p.sanidade_max??100,"sanidade"));
+    card.appendChild(texto("p","Defesa "+(p.defesa??10),"resumo-defesa"));
+    if(npc){
+      const acoes=document.createElement("div");acoes.className="acoes-cartao-npc";const b=texto("a","Abrir ficha →");b.href="../npc/ficha/index.html?campanha="+encodeURIComponent(campanha)+"&id="+p.id;
+      const apagar=texto("button","Apagar");apagar.type="button";apagar.className="apagar-npc";apagar.onclick=async()=>{if(!confirm(`Apagar ${p.nome}? Esta ação não poderá ser desfeita.`))return;apagar.disabled=true;const{error}=await auth.cliente.from("npcs_monstros").delete().eq("id",p.id).eq("rpg",rpg);if(error){aviso("Não foi possível apagar: "+error.message);apagar.disabled=false;return}if(p.foto_path)await auth.cliente.storage.from("personagens").remove([p.foto_path]);card.remove();aviso(`${p.nome} foi apagado.`,true)};
+      acoes.append(b,apagar);card.appendChild(acoes)
+    }
+    else{const a=texto("a","Abrir ficha →");a.href="../ficha/index.html?campanha="+encodeURIComponent(campanha)+"&id="+p.id;card.appendChild(a)}
+    return card;
+  }
+  let tab="jogadores",ocupado=false,registros=[],eventosConfronto=[],idsConfronto=new Set(),anteriores=0,acabou=false;
+  async function carregarResumo(){
+    const {data,error}=await auth.cliente.from("personagens").select("*").eq("rpg",rpg).eq("campanha",campanha).order("criado_em");
+    if(error){aviso("Não foi possível atualizar as fichas: "+error.message);return}
+    const cards=await Promise.all(data.map(p=>cartao(p)));const lista=document.querySelector("#resumos-campanha");lista.replaceChildren(...cards);
+    if(!data.length)lista.appendChild(texto("p","Nenhum personagem criado nesta campanha.","painel-vazio"));
+  }
+  async function encerrarConfronto(c,nome,botao){if(!confirm(`Encerrar o confronto ${nome}? Os combatentes serão liberados imediatamente.`))return;botao.disabled=true;botao.textContent='Encerrando...';const{error}=await auth.cliente.rpc('encerrar_confronto_mestre',{confronto_alvo:c.id});if(error){alert('Não foi possível encerrar: '+error.message);botao.disabled=false;botao.textContent='Encerrar confronto';return}await carregarConfrontos()}
+  async function carregarConfrontos(){const lista=document.querySelector('#confrontos-ativos'),{data,error}=await auth.cliente.from('confrontos').select('id,oponente_tipo,personagem_a_id,personagem_b_id,npc_b_id,criado_em').eq('rpg',rpg).eq('campanha',campanha).eq('ativo',true).order('criado_em',{ascending:false});if(error){lista.replaceChildren(texto('p','Não foi possível carregar os confrontos: '+error.message,'painel-vazio'));return}const cards=await Promise.all((data||[]).map(async c=>{const{data:d}=await auth.cliente.rpc('obter_confronto_detalhes',{confronto_alvo:c.id}),el=document.createElement('article');el.className='confronto-ativo-card';if(!d){el.textContent='Confronto indisponível';return el}el.innerHTML='<div><small>'+ (c.oponente_tipo==='npc'?'Jogador × NPC/Monstro':'Jogador × Jogador') +'</small><h3></h3><p>Iniciado '+new Date(c.criado_em).toLocaleString('pt-BR')+'</p></div><div class="acoes-confronto-escudo"><a>Abrir ficha do confronto →</a><button type="button">Encerrar confronto</button></div>';const nome=d.lado_a.nome+' × '+d.lado_b.nome;el.querySelector('h3').textContent=nome;const a=el.querySelector('a');a.href=c.oponente_tipo==='npc'?'../npc/ficha/index.html?campanha='+encodeURIComponent(campanha)+'&id='+encodeURIComponent(d.lado_b.id)+'&confronto='+encodeURIComponent(c.id):'../confronto/index.html?campanha='+encodeURIComponent(campanha)+'&confronto='+encodeURIComponent(c.id);a.target='_blank';a.rel='noopener';el.querySelector('button').onclick=e=>encerrarConfronto(c,nome,e.currentTarget);return el}));lista.replaceChildren(...cards);if(!cards.length)lista.appendChild(texto('p','Nenhum confronto ativo nesta campanha.','sem-confronto'))}
+  function desenharHistorico(){
+    const lista=document.querySelector("#historico-dados");lista.replaceChildren();
+    const todos=[...registros,...eventosConfronto].sort((a,b)=>new Date(b.criado_em)-new Date(a.criado_em));
+    if(!todos.length)lista.appendChild(texto("p","As próximas rolagens e resultados aparecerão aqui.","painel-vazio"));
+    todos.forEach(r=>{const el=document.createElement("article");if(r._confronto){const d=r.detalhes||{},acertou=d.acertou===true||d.acertou==='true',resumo=acertou?`Ataque ${d.ataque_total} × ${d.defesa_pericia||'Defesa'} ${d.defesa_total} • ${d.dano||0} de dano${Number(d.dano_defesa)>0?` • Defesa −${d.dano_defesa}`:''}${Number(d.dano_vida)>0?` • Vida −${d.dano_vida}`:''}`:`Ataque ${d.ataque_total} × ${d.defesa_pericia||'Defesa'} ${d.defesa_total} • Golpe evitado`;el.className='rolagem-historico resultado-confronto-v62';el.append(texto('small',new Date(r.criado_em).toLocaleString('pt-BR')),texto('h3',acertou?'Golpe acertou':'Defesa bem-sucedida'),texto('strong',resumo));lista.appendChild(el);return}const mod=Number(r.modificador)||0,conta=r.resultados.join(" + ")+(mod?` ${mod>0?"+":"−"} ${Math.abs(mod)}`:"");el.className="rolagem-historico"+(r.critico?" critico":"");el.append(texto("small",new Date(r.criado_em).toLocaleString("pt-BR")),texto("h3",r.jogador_nome+" · "+r.personagem_nome),texto("p",r.origem+" · "+r.resultados.length+"D"+r.faces),texto("strong",conta+" = "+r.total));if(r.critico)el.appendChild(texto("span","Crítico!"));lista.appendChild(el)});
+    document.querySelector("#mais-historico").hidden=acabou;
+  }
+  async function carregarHistorico(mais=false){
+    let query=auth.cliente.from("rolagens_campanha").select("*").eq("rpg",rpg).eq("campanha",campanha).order("criado_em",{ascending:false}).order("id",{ascending:false});
+    if(mais)query=query.range(anteriores,anteriores+99);else query=query.range(0,99);
+    const {data,error}=await query;if(error){aviso("Para carregar o histórico, execute database/mestre-painel-v7.sql: "+error.message);return}
+    if(mais||anteriores===0){anteriores+=data.length;acabou=data.length<100}
+    const mapa=new Map(registros.map(r=>[r.id,r]));data.forEach(r=>mapa.set(r.id,r));registros=[...mapa.values()];desenharHistorico();
+  }
+  async function carregarEventosConfronto(){const{data:cs}=await auth.cliente.from('confrontos').select('id').eq('rpg',rpg).eq('campanha',campanha).order('criado_em',{ascending:false}).limit(30);idsConfronto=new Set((cs||[]).map(x=>x.id));if(!idsConfronto.size){eventosConfronto=[];return}const{data}=await auth.cliente.from('historico_confronto_v60').select('id,confronto_id,tipo,detalhes,criado_em').in('confronto_id',[...idsConfronto]).eq('tipo','resolucao').order('criado_em',{ascending:false}).limit(100);eventosConfronto=(data||[]).map(x=>({...x,_confronto:true}))}
+  async function atualizar(){if(ocupado)return;ocupado=true;try{await Promise.all([carregarResumo(),carregarHistorico(),carregarEventosConfronto(),carregarConfrontos()]);desenharHistorico()}finally{ocupado=false}}
+  async function restaurarTodos(){
+    if(!confirm("Restaurar Vida, Energia Mágica e Sanidade de todos os jogadores desta campanha para seus valores máximos?"))return;
+    const botao=document.querySelector("#restaurar-todos");botao.disabled=true;
+    try{const{data,error}=await auth.cliente.rpc("restaurar_recursos_campanha",{alvo_rpg:rpg,alvo_campanha:campanha});if(error)throw error;await carregarResumo();alert(`${data||0} jogador(es) restaurado(s) com sucesso.`)}catch(error){aviso("Não foi possível restaurar os jogadores: "+error.message)}finally{botao.disabled=false}
+  }
+  async function limparHistorico(){
+    if(!confirm("Apagar TODO o histórico de dados desta campanha? Esta ação não poderá ser desfeita."))return;
+    const botao=document.querySelector("#limpar-historico");botao.disabled=true;
+    try{const{data,error}=await auth.cliente.rpc("limpar_historico_campanha",{alvo_rpg:rpg,alvo_campanha:campanha});if(error)throw error;registros=[];anteriores=0;acabou=true;desenharHistorico();alert(`${data||0} rolagem(ns) apagada(s).`)}catch(error){aviso("Não foi possível limpar o histórico: "+error.message)}finally{botao.disabled=false}
+  }
+  async function carregarNpcs(){
+    const {data,error}=await auth.cliente.from("npcs_monstros").select("*").eq("rpg",rpg).eq("campanha",campanha).order("criado_em");
+    if(error){aviso("Para criar NPCs e monstros, execute database/mestre-painel-v7.sql: "+error.message);return}
+    const cards=await Promise.all(data.map(p=>cartao(p,true))),lista=document.querySelector("#grade-npcs");lista.replaceChildren(...cards);
+    if(!data.length)lista.appendChild(texto("p","Crie seu primeiro NPC ou monstro para esta campanha.","painel-vazio"));
+  }
+  function abrirEditorNpc(p={}){
+    const dialog=document.createElement("dialog");dialog.className="editor-npc";const form=document.createElement("form");dialog.appendChild(form);
+    const header=document.createElement("header");header.appendChild(texto("h2",p.id?"Ficha de NPC/Monstro":"Criar NPC/Monstro"));const fechar=texto("button","×");fechar.type="button";fechar.setAttribute("aria-label","Fechar");fechar.onclick=()=>dialog.close();header.appendChild(fechar);form.appendChild(header);
+    const campos=document.createElement("div");campos.className="npc-campos";form.appendChild(campos);
+    function campo(nome,label,tipo="text",padrao="",largo=false){
+      const wrap=texto("label",label);if(largo)wrap.className="npc-largo";const input=document.createElement(tipo==="textarea"?"textarea":tipo==="select"?"select":"input");input.name=nome;
+      if(tipo==="select"){["NPC","Monstro"].forEach(valor=>{const op=texto("option",valor);op.value=valor;input.appendChild(op)})}
+      else if(tipo!=="textarea")input.type=tipo;
+      if(tipo==="number"){input.min="0";input.step="1"}
+      if(nome==="nome"){input.required=true;input.maxLength=100}
+      input.value=p[nome]??padrao;wrap.appendChild(input);campos.appendChild(wrap);return input;
+    }
+    campo("nome","Nome");campo("tipo","Tipo","select","NPC");const arquivo=campo("foto","Imagem","file");arquivo.accept="image/png,image/jpeg,image/webp";campo("nivel","Nível","number",0);
+    campo("descricao","Descrição, história e personalidade","textarea","",true);
+    atributos.forEach(([nome,label])=>campo(nome,{"AGI":"Agilidade","FOR":"Força","APT":"Apt. Mágica","PRE":"Presença","RES":"Resistência"}[label],"number",0));
+    for(const [nome,label,valor] of [["defesa","Defesa",10],["vida_atual","Vida atual",15],["vida_max","Vida máxima",15],["energia_atual","Energia atual",0],["energia_max","Energia máxima",0],["sanidade_atual","Sanidade atual",100],["sanidade_max","Sanidade máxima",100]])campo(nome,label,"number",valor);
+    campo("ficha_livre","Ficha livre: ataques, habilidades, resistências, itens e notas","textarea","",true);
+    const abasExtras=document.createElement("nav");abasExtras.className="npc-extras-abas";abasExtras.innerHTML='<button type="button" data-extra="ficha" class="ativa">Ficha</button><button type="button" data-extra="drops">Drops</button><button type="button" data-extra="xp">XP</button>';form.insertBefore(abasExtras,campos);
+    const extras=document.createElement("section");extras.className="npc-extras";extras.hidden=true;extras.innerHTML='<div class="npc-extra-painel" data-painel="drops"><label>Drops ao morrer<textarea name="drops" maxlength="5000" placeholder="Um item ou recompensa por linha"></textarea></label></div><div class="npc-extra-painel" data-painel="xp" hidden><label>XP concedido ao morrer<input name="xp_recompensa" type="number" min="0" step="1" value="0"></label><p>A recompensa será usada quando a finalização do confronto for implementada.</p></div>';form.appendChild(extras);extras.querySelector('[name="drops"]').value=p.drops||"";extras.querySelector('[name="xp_recompensa"]').value=p.xp_recompensa??0;abasExtras.querySelectorAll("[data-extra]").forEach(b=>b.onclick=()=>{abasExtras.querySelectorAll("[data-extra]").forEach(x=>x.classList.toggle("ativa",x===b));campos.hidden=b.dataset.extra!=="ficha";extras.hidden=b.dataset.extra==="ficha";extras.querySelectorAll("[data-painel]").forEach(x=>x.hidden=x.dataset.painel!==b.dataset.extra)});
+    const status=texto("p","","npc-status");form.appendChild(status);const footer=document.createElement("footer"),salvar=texto("button","Salvar ficha");salvar.type="submit";footer.appendChild(salvar);form.appendChild(footer);
+    form.onsubmit=async e=>{
+      e.preventDefault();salvar.disabled=true;status.textContent="Salvando...";
+      try{
+        const registro={rpg,campanha,nome:form.elements.nome.value.trim(),tipo:form.elements.tipo.value,descricao:form.elements.descricao.value,ficha_livre:form.elements.ficha_livre.value,drops:form.elements.drops.value.trim(),xp_recompensa:Number(form.elements.xp_recompensa.value)||0};
+        ["nivel","agilidade","forca","apt_magica","presenca","resistencia","defesa","vida_atual","vida_max","energia_atual","energia_max","sanidade_atual","sanidade_max"].forEach(c=>registro[c]=Number(form.elements[c].value)||0);
+        if(arquivo.files[0]){
+          const f=arquivo.files[0];if(f.size>5242880||!["image/png","image/jpeg","image/webp"].includes(f.type))throw Error("Use PNG, JPG ou WEBP de até 5 MB.");
+          const path=auth.usuario.id+"/"+rpg+"/npcs/"+crypto.randomUUID()+"."+({"image/png":"png","image/jpeg":"jpg","image/webp":"webp"}[f.type]);
+          const {error}=await auth.cliente.storage.from("personagens").upload(path,f);if(error)throw error;registro.foto_path=path;
+        }
+        const query=p.id?auth.cliente.from("npcs_monstros").update(registro).eq("id",p.id).eq("rpg",rpg):auth.cliente.from("npcs_monstros").insert(registro);
+        const {error}=await query;if(error)throw error;dialog.close();await carregarNpcs();
+      }catch(error){status.textContent=error.message}finally{salvar.disabled=false}
+    };
+    dialog.addEventListener("close",()=>dialog.remove(),{once:true});document.body.appendChild(dialog);dialog.showModal();
+  }
+  nav.querySelectorAll("button").forEach(b=>b.onclick=async()=>{
+    tab=b.dataset.painel;nav.querySelectorAll("button").forEach(el=>{el.classList.toggle("ativa",el===b);el.setAttribute("aria-pressed",String(el===b))});
+    grade.hidden=tab!=="jogadores";escudo.hidden=tab!=="escudo";npcs.hidden=tab!=="npcs";
+    cabecalho.querySelector("h1").textContent=tab==="jogadores"?"Fichas dos jogadores":tab==="escudo"?"Escudo do Mestre":"NPCs/Monstros";
+    cabecalho.querySelector("p").textContent=tab==="jogadores"?"Selecione um personagem para abrir a ficha completa.":tab==="escudo"?"Visão da campanha · atualização em tempo real.":"Crie e edite suas criaturas e personagens livremente.";
+    if(tab==="escudo")await atualizar();if(tab==="npcs")await carregarNpcs();
+  });
+  nav.querySelector("button").classList.add("ativa");
+  document.querySelector("#novo-npc").onclick=()=>location.href="../npc/index.html?campanha="+encodeURIComponent(campanha);document.querySelector("#restaurar-todos").onclick=restaurarTodos;document.querySelector("#limpar-historico").onclick=limparHistorico;document.querySelector("#testar-animacao").onclick=previsualizarAnimacao;document.querySelector("#atualizar-escudo").onclick=atualizar;document.querySelector("#mais-historico").onclick=()=>carregarHistorico(true);
+  const canalRolagens=auth.cliente.channel("rolagens-mestre-"+rpg+"-"+campanha)
+    .on("postgres_changes",{event:"INSERT",schema:"public",table:"rolagens_campanha",filter:"rpg=eq."+rpg},payload=>{
+      const nova=payload.new;if(nova?.campanha!==campanha)return;
+      if(!registros.some(registro=>registro.id===nova.id)){registros.unshift(nova);anteriores+=1;if(tab==="escudo")desenharHistorico()}
+    }).subscribe();
+  const canalConfrontos=auth.cliente.channel('confrontos-escudo-'+rpg+'-'+campanha).on('postgres_changes',{event:'*',schema:'public',table:'confrontos',filter:'rpg=eq.'+rpg},payload=>{const linha=payload.new||payload.old;if(linha?.campanha===campanha&&tab==='escudo')carregarConfrontos()}).subscribe();
+  const canalEventos=auth.cliente.channel('eventos-confronto-escudo-'+rpg+'-'+campanha).on('postgres_changes',{event:'INSERT',schema:'public',table:'historico_confronto_v60'},payload=>{const nova=payload.new;if(nova?.tipo!=='resolucao'||!idsConfronto.has(nova.confronto_id))return;if(!eventosConfronto.some(x=>x.id===nova.id))eventosConfronto.unshift({...nova,_confronto:true});if(tab==='escudo')desenharHistorico()}).subscribe();
+  const timer=setInterval(async()=>{if(tab==="escudo"&&!document.hidden){await Promise.all([carregarHistorico(),carregarEventosConfronto()]);desenharHistorico()}},3000);
+  document.addEventListener("visibilitychange",async()=>{if(tab==="escudo"&&!document.hidden){await Promise.all([carregarHistorico(),carregarEventosConfronto()]);desenharHistorico()}});
+  window.addEventListener("pagehide",()=>{clearInterval(timer);auth.cliente.removeChannel(canalRolagens);auth.cliente.removeChannel(canalConfrontos);auth.cliente.removeChannel(canalEventos)},{once:true});
+  await new Promise((resolve,reject)=>{const script=document.createElement("script");script.src="../../../acoes-mestre-v8.js?v=71";script.onload=resolve;script.onerror=reject;document.head.appendChild(script)});
+  await window.iniciarAcoesMestreV8();
+};

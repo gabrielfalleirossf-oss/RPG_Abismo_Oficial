@@ -1,0 +1,36 @@
+.modal-racas-v62 [data-raca] > .retrato-raca-v64 {
+  height: 168px;
+  margin: -16px -16px 14px;
+  overflow: hidden;
+  position: relative;
+  padding: 10px 16px 14px;
+  box-sizing: border-box;
+  background: radial-gradient(circle at 50% 42%, color-mix(in srgb, var(--raca-cor) 23%, #0a1018), #080d14 76%);
+}
+
+.modal-racas-v62 .retrato-raca-v64::after {
+  display: none;
+}
+
+.modal-racas-v62 .retrato-raca-v64 img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  filter: drop-shadow(0 0 15px color-mix(in srgb, var(--raca-cor) 55%, transparent));
+  transition: transform .25s ease;
+}
+
+.modal-racas-v62 [data-raca]:hover .retrato-raca-v64 img {
+  transform: scale(1.08);
+}
+
+/* Ambientes próprios de cada linhagem no seletor. */
+.modal-racas-v62 [data-raca]{position:relative;isolation:isolate;overflow:hidden;background:#0b121c}
+.modal-racas-v62 [data-raca]::before{content:"";position:absolute;z-index:-1;inset:0;opacity:.78;pointer-events:none}
+.modal-racas-v62 [data-raca="Uchiha"]::before{background:radial-gradient(circle at 50% 18%,#d7193c55,transparent 42%),repeating-radial-gradient(circle at 50% 20%,transparent 0 24px,#ef304f12 25px 27px),linear-gradient(145deg,#160810,#080d15 70%)}
+.modal-racas-v62 [data-raca="Ghoul"]::before{background:radial-gradient(ellipse at 50% 10%,#c927354c,transparent 46%),repeating-linear-gradient(125deg,transparent 0 22px,#76182514 23px 25px),linear-gradient(145deg,#16090d,#080d15 72%)}
+.modal-racas-v62 [data-raca="Vampiro"]::before{background:radial-gradient(circle at 78% 6%,#a9002f5c 0 14%,transparent 35%),linear-gradient(115deg,transparent 0 46%,#7d102014 47% 49%,transparent 50%),linear-gradient(150deg,#17070d,#080d15 68%)}
+.modal-racas-v62 [data-raca="Kitsune"]::before{background:radial-gradient(circle at 25% 18%,#ff8a244d,transparent 36%),radial-gradient(circle at 78% 22%,#53cfff32,transparent 32%),linear-gradient(150deg,#181008,#080d15 72%)}
+.modal-racas-v62 [data-raca="Fada"]::before{background:radial-gradient(circle at 50% 16%,#73e9a851,transparent 42%),radial-gradient(circle at 25% 50%,#d8bf4430 0 2px,transparent 3px),linear-gradient(150deg,#071710,#080d15 72%);background-size:auto,22px 22px,auto}
+.modal-racas-v62 [data-raca="Elfo"]::before{background:radial-gradient(circle at 50% 12%,#35d7cf4d,transparent 42%),repeating-radial-gradient(circle at 50% 15%,transparent 0 31px,#3fd7c814 32px 34px),linear-gradient(150deg,#061718,#080d15 72%)}

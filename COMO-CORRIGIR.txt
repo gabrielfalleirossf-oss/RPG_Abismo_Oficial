@@ -1,0 +1,20 @@
+CORREÇÃO DO CARREGAMENTO RACIAL
+
+1. Abra a pasta local do repositório RPG_Abismo.
+2. Copie o arquivo progressao-racial-v62.js deste pacote.
+3. Cole na pasta principal do repositório e confirme a substituição.
+4. No GitHub Desktop, use o resumo:
+   Corrige carregamento duplicado das raças
+5. Clique em Commit to main e depois em Push origin.
+6. Aguarde o GitHub Pages atualizar e abra o site com Ctrl + F5.
+
+Não execute nenhum SQL.
+Não apague as imagens das raças ou dos estágios.
+Não altere as raças já cadastradas nos personagens.
+
+O QUE FOI CORRIGIDO
+
+- Impede várias montagens simultâneas da progressão racial.
+- Encerra o verificador assim que o painel racial termina de carregar.
+- Evita consultas e elementos duplicados.
+- Mantém as imagens, os fundos, os bônus e todas as etapas existentes.
